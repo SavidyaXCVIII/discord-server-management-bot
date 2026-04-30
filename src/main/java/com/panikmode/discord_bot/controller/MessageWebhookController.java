@@ -1,7 +1,6 @@
 package com.panikmode.discord_bot.controller;
 
 import com.panikmode.discord_bot.service.MessageService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
