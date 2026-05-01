@@ -38,7 +38,7 @@ public class MessageService {
     @Value("${discord.welcome-channel-id}")
     private String channelId;
 
-    @Value("${discord.welcome-greetings-id}")
+    @Value("${discord.greetings-channel-id}")
     private String greetingsChannelId;
 
     @Value("${discord.guild-id}")
