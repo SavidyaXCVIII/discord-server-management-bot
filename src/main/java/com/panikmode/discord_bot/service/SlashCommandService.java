@@ -8,8 +8,10 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,7 @@ public class SlashCommandService {
 
     private final UserService userService;
     private final UserRepository userRepository;
+    private final MessageService messageService;
 
     @Value("${discord.panikmode-practice-channel}")
     private String practiceChannelId;
@@ -38,9 +41,10 @@ public class SlashCommandService {
     @Value("${discord.panikmode-tag}")
     private String tagId;
 
-    public SlashCommandService(UserService userService, UserRepository userRepository) {
+    public SlashCommandService(UserService userService, UserRepository userRepository, MessageService messageService) {
         this.userService = userService;
         this.userRepository = userRepository;
+        this.messageService = messageService;
     }
 
 
@@ -137,5 +141,21 @@ public class SlashCommandService {
 
         event.reply("✅ Moved `" + membersToMove.size() + "` member(s) with role `"
                 + PRACTICE_ROLE_NAME + "` to `" + PRACTICE_CHANNEL_NAME + "`!").queue();
+    }
+
+    public void officialServerAnnouncement(SlashCommandInteractionEvent event) {
+
+        event.deferReply(true).queue();
+
+        String message = Objects.requireNonNull(event.getOption("message")).getAsString();
+        String customTitle = Objects.requireNonNull(event.getOption("title")).getAsString();
+
+        OptionMapping attachmentOption = event.getOption("media");
+
+        String attachmentUrl = attachmentOption != null ? attachmentOption.getAsAttachment().getUrl() : null;
+
+        messageService.officialServerAnnouncement(message, attachmentUrl, customTitle);
+
+        event.getHook().sendMessage("✅ Announcement posted!").setEphemeral(true).queue();
     }
 }

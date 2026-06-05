@@ -27,7 +27,7 @@ public class SlashCommandListener  extends ListenerAdapter {
 
         switch (event.getName()) {
             case "practice" -> moveToPracticeChannel(event);
-            case "greetings" -> greatServerMember(event);
+            case "official" -> officialServerAnnouncement(event);
             case "adduser" -> addUser(event);
             case "announcements" -> announceBoosters(event);
             default -> event.reply("❌ Unknown command.").setEphemeral(true).queue();
@@ -50,6 +50,10 @@ public class SlashCommandListener  extends ListenerAdapter {
     private void greatServerMember(SlashCommandInteractionEvent event) {
         long ping = event.getJDA().getGatewayPing();
         event.reply("🏓 Pong! Gateway ping: `" + ping + "ms`").queue();
+    }
+
+    private void officialServerAnnouncement(SlashCommandInteractionEvent event) {
+        slashCommandService.officialServerAnnouncement(event);
     }
 
 

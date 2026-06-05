@@ -37,8 +37,11 @@ public class DiscordConfig {
         jda.updateCommands().addCommands(
                 Commands.slash("practice", "Move Panik Mode members to Practice channel."),
                 Commands.slash("announcements", "Announce the boosters."),
-                Commands.slash("greetings", "Echoes your message back")
-                        .addOption(OptionType.STRING, "message", "The message to echo", true),
+                Commands.slash("official", "Put Official Announcement in GENERAL")
+                        .addOption(OptionType.STRING, "message", "The announcement message.", true)
+                        .addOption(OptionType.ATTACHMENT, "media", "Optional Image / Video", false)
+                        .addOption(OptionType.STRING, "title", "Add a custom title", false)
+                ,
                 Commands.slash("adduser", "Shows your Discord user info")
                         .addOption(OptionType.USER, "user", "Please add the user to log the birthday", true)
                         .addOption(OptionType.INTEGER, "day", "day", true)

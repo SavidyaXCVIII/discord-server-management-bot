@@ -38,6 +38,9 @@ public class MessageService {
     @Value("${discord.welcome-channel-id}")
     private String channelId;
 
+    @Value("${discord.logs-channel-id}")
+    private String testChannelId;
+
     @Value("${discord.greetings-channel-id}")
     private String greetingsChannelId;
 
@@ -274,6 +277,40 @@ public class MessageService {
         if (birthDate.isAfter(today)) return 0;
 
         return Period.between(birthDate, today).getYears();
+    }
+
+    public void officialServerAnnouncement(String message, String attachmentUrl, String customTitle) {
+
+        TextChannel channel = jda.getTextChannelById(channelId);
+        if (channel == null) return;
+
+        String imageUrl = attachmentUrl;
+        String description = message;
+        if (imageUrl == null) {
+            java.util.regex.Matcher m = java.util.regex.Pattern
+                    .compile("https?://\\S+").matcher(message);
+            if (m.find()) {
+                imageUrl = m.group();
+                description = message.replace(imageUrl, "").strip();
+            }
+        }
+
+        EmbedBuilder embed = new EmbedBuilder()
+                .setTitle((customTitle != null ? customTitle : "📢 Official Announcement"))
+                .setDescription(description.isEmpty() ? null : description)
+                .setColor(new Color(255, 215, 0))
+                .setThumbnail(jda.getSelfUser().getAvatarUrl())
+                .setFooter("Official Notice • ", jda.getSelfUser().getAvatarUrl())
+                .setTimestamp(Instant.now());
+
+        embed.addField("", "══════════════════════════════════════════", false);
+
+        if (imageUrl != null) {
+            embed.setImage(imageUrl);
+        }
+
+        channel.sendMessageEmbeds(embed.build()).queue();
+
     }
 
     public void sendWelcomeMessage(Guild guild, Member member) {
